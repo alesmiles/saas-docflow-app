@@ -48,7 +48,7 @@ export function FilterBar(props: FilterBarProps) {
       <div className="flex items-center gap-2 flex-wrap">
         <div className="relative flex-shrink-0">
           <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <Input placeholder="Поиск..." className="pl-9 h-9 text-sm bg-gray-50 border-gray-200 w-52" value={search} onChange={(e) => setSearch(e.target.value)} />
+          <Input placeholder="Search..." className="pl-9 h-9 text-sm bg-gray-50 border-gray-200 w-52" value={search} onChange={(e) => setSearch(e.target.value)} />
         </div>
 
         <DndContext sensors={filterSensors} collisionDetection={closestCenter} onDragEnd={onFilterDragEnd}>
@@ -65,11 +65,11 @@ export function FilterBar(props: FilterBarProps) {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className={cn("h-9 text-sm bg-gray-50 border-gray-200", (optEnabled.direction && directionFilter) && "text-blue-700 border-blue-300 bg-blue-50")}>
-                {directionFilter || "Направление"} <ChevronDown className="w-3.5 h-3.5 ml-1 opacity-50" />
+                {directionFilter || "Direction"} <ChevronDown className="w-3.5 h-3.5 ml-1 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => setDirectionFilter("")}>Все</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setDirectionFilter("")}>All</DropdownMenuItem>
               {directionOptions.map((d) => <DropdownMenuItem key={d} onClick={() => setDirectionFilter(d)}>{d}</DropdownMenuItem>)}
             </DropdownMenuContent>
           </DropdownMenu>
@@ -79,11 +79,11 @@ export function FilterBar(props: FilterBarProps) {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className={cn("h-9 text-sm bg-gray-50 border-gray-200", (optEnabled.year && yearFilter) && "text-blue-700 border-blue-300 bg-blue-50")}>
-                {yearFilter || "Год"} <ChevronDown className="w-3.5 h-3.5 ml-1 opacity-50" />
+                {yearFilter || "Year"} <ChevronDown className="w-3.5 h-3.5 ml-1 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => setYearFilter("")}>Все годы</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setYearFilter("")}>All years</DropdownMenuItem>
               {yearOptions.map((y) => <DropdownMenuItem key={y} onClick={() => setYearFilter(y)}>{y}</DropdownMenuItem>)}
             </DropdownMenuContent>
           </DropdownMenu>
@@ -93,11 +93,11 @@ export function FilterBar(props: FilterBarProps) {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className={cn("h-9 text-sm bg-gray-50 border-gray-200", (optEnabled.month && monthFilter) && "text-blue-700 border-blue-300 bg-blue-50")}>
-                {monthFilter || "Месяц"} <ChevronDown className="w-3.5 h-3.5 ml-1 opacity-50" />
+                {monthFilter || "Month"} <ChevronDown className="w-3.5 h-3.5 ml-1 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => setMonthFilter("")}>Все месяцы</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setMonthFilter("")}>All months</DropdownMenuItem>
               {monthOptions.map((m) => <DropdownMenuItem key={m} onClick={() => setMonthFilter(m)}>{m}</DropdownMenuItem>)}
             </DropdownMenuContent>
           </DropdownMenu>
@@ -107,11 +107,11 @@ export function FilterBar(props: FilterBarProps) {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className={cn("h-9 text-sm bg-gray-50 border-gray-200", (optEnabled.doManager && doManagerFilter) && "text-blue-700 border-blue-300 bg-blue-50")}>
-                {doManagerFilter || "Менеджер ДО"} <ChevronDown className="w-3.5 h-3.5 ml-1 opacity-50" />
+                {doManagerFilter || "Doc Manager"} <ChevronDown className="w-3.5 h-3.5 ml-1 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => setDoManagerFilter("")}>Все</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setDoManagerFilter("")}>All</DropdownMenuItem>
               {doManagerOptions.map((m) => <DropdownMenuItem key={m} onClick={() => setDoManagerFilter(m)}>{m}</DropdownMenuItem>)}
             </DropdownMenuContent>
           </DropdownMenu>
@@ -124,7 +124,7 @@ export function FilterBar(props: FilterBarProps) {
             className="h-9 text-sm bg-gray-50 text-gray-700 border-gray-200"
             onClick={() => setShowOverdueOnly(!showOverdueOnly)}
           >
-            Просроченные оплаты
+            Overdue payments
           </Button>
         )}
 
@@ -135,7 +135,7 @@ export function FilterBar(props: FilterBarProps) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-52">
-            <DropdownMenuLabel className="text-xs text-gray-400">Настройка фильтров</DropdownMenuLabel>
+            <DropdownMenuLabel className="text-xs text-gray-400">Filter settings</DropdownMenuLabel>
             <DropdownMenuSeparator />
             {(Object.keys(optEnabled) as string[]).map((key) => (
               <DropdownMenuCheckboxItem
@@ -151,7 +151,7 @@ export function FilterBar(props: FilterBarProps) {
 
         {hasAnyFilter && resetFilters && (
           <Button variant="ghost" size="sm" className="text-gray-500 hover:text-gray-700 hover:bg-gray-100" onClick={resetFilters}>
-            Сбросить всё
+            Reset all
           </Button>
         )}
       </div>

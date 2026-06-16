@@ -35,11 +35,11 @@ export interface Project {
 }
 
 export type ContractorDocStatus =
-  | "Не создан"
-  | "Запрошен"
-  | "Получен"
-  | "Подписан ОРИГ"
-  | "Подписан ЭДО";
+  | "Not Created"
+  | "Requested"
+  | "Received"
+  | "Signed ORIG"
+  | "Signed EDO";
 
 export interface ContractorDoc {
   id: number;

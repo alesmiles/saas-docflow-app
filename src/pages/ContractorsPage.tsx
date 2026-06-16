@@ -15,22 +15,22 @@ import {
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const CONTRACTOR_STATUSES = ["Не создан", "Запрошен", "Получен", "Подписан ОРИГ", "Подписан ЭДО"] as const;
+const CONTRACTOR_STATUSES = ["Not Created", "Requested", "Received", "Signed ORIG", "Signed EDO"] as const;
 
 const CONTRACTOR_STATUS_COLORS: Record<ContractorDocStatus, string> = {
-  "Не создан":     "#9CA3AF",
-  "Запрошен":      "#0EA5E9",
-  "Получен":       "#EAB308",
-  "Подписан ОРИГ": "#10B981",
-  "Подписан ЭДО":  "#10B981",
+  "Not Created":  "#9CA3AF",
+  "Requested":    "#0EA5E9",
+  "Received":     "#EAB308",
+  "Signed ORIG":  "#10B981",
+  "Signed EDO":   "#10B981",
 };
 
 const CONTRACTOR_STATUS_BG: Record<ContractorDocStatus, string> = {
-  "Не создан":     "bg-gray-100 text-gray-700",
-  "Запрошен":      "bg-sky-50 text-sky-700",
-  "Получен":       "bg-amber-50 text-amber-700",
-  "Подписан ОРИГ": "bg-emerald-50 text-emerald-700",
-  "Подписан ЭДО":  "bg-emerald-50 text-emerald-700",
+  "Not Created":  "bg-gray-100 text-gray-700",
+  "Requested":    "bg-sky-50 text-sky-700",
+  "Received":     "bg-amber-50 text-amber-700",
+  "Signed ORIG":  "bg-emerald-50 text-emerald-700",
+  "Signed EDO":   "bg-emerald-50 text-emerald-700",
 };
 
 const CLIENT_COL = "32px minmax(160px,16%) minmax(90px,8%) minmax(88px,7%) minmax(110px,10%) minmax(110px,10%) minmax(120px,11%) minmax(120px,11%) minmax(130px,12%) minmax(120px,10%)";
@@ -57,23 +57,19 @@ export function ContractorsPage({ subPage, onNavigate }: ContractorsPageProps) {
 
   const [expanded, setExpanded] = useState<Set<number>>(new Set());
 
-  // Always-visible filters
   const [search, setSearch] = useState("");
   const [clientFilter, setClientFilter] = useState("");
   const [contractorFilter, setContractorFilter] = useState("");
   const [responsibleFilter, setResponsibleFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
 
-  // Optional filter values
   const [directionFilter, setDirectionFilter] = useState("");
   const [yearFilter, setYearFilter] = useState(String(new Date().getFullYear()));
   const [monthFilter, setMonthFilter] = useState("");
   const [docManagerFilter, setDocManagerFilter] = useState("");
 
-  // Which optional filters are shown
   const [visibleFilters, setVisibleFilters] = useState({ direction: false, year: true, month: false, docManager: false });
 
-  // Month sort: null → asc → desc → null
   const [monthSort, setMonthSort] = useState<null | "asc" | "desc">(null);
 
   const toggleFilter = (key: keyof typeof visibleFilters) => {
@@ -87,7 +83,6 @@ export function ContractorsPage({ subPage, onNavigate }: ContractorsPageProps) {
     }
   };
 
-  // Derived option lists
   const clientOptions = Array.from(new Set(contractors.map(p => p.client).filter(Boolean))) as string[];
   const contractorOptions = Array.from(new Set(contractors.map(p => p.contractor)));
   const responsibleOptions = Array.from(new Set(contractors.map(p => p.responsible.name)));
@@ -139,7 +134,7 @@ export function ContractorsPage({ subPage, onNavigate }: ContractorsPageProps) {
   return (
     <div>
       <div className="flex items-center gap-4 px-8 pt-8 pb-4">
-        <h1 className="text-2xl font-bold text-gray-900">Подрядчики</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Contractors</h1>
         <div className="inline-flex rounded-lg border border-gray-200 bg-gray-100 p-0.5 gap-0.5">
           <button
             onClick={() => onNavigate?.("contractors-client")}
@@ -148,7 +143,7 @@ export function ContractorsPage({ subPage, onNavigate }: ContractorsPageProps) {
               subPage === "client" ? "bg-white text-gray-900 shadow-sm font-medium" : "text-gray-500 hover:text-gray-700"
             )}
           >
-            Клиентские
+            Client
           </button>
           <button
             onClick={() => onNavigate?.("contractors-internal")}
@@ -157,19 +152,18 @@ export function ContractorsPage({ subPage, onNavigate }: ContractorsPageProps) {
               subPage === "internal" ? "bg-white text-gray-900 shadow-sm font-medium" : "text-gray-500 hover:text-gray-700"
             )}
           >
-            Внутренние
+            Internal
           </button>
         </div>
       </div>
 
-      {/* Filter bar */}
       <div className="px-8 pb-3">
         <div className="flex items-center gap-2 flex-wrap">
 
           <div className="relative flex-shrink-0">
             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <Input
-              placeholder="Поиск..."
+              placeholder="Search..."
               className="pl-9 h-9 text-sm bg-gray-50 border-gray-200 w-52"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -180,11 +174,11 @@ export function ContractorsPage({ subPage, onNavigate }: ContractorsPageProps) {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm" className={cn("h-9 text-sm bg-gray-50 border-gray-200", clientFilter && "text-blue-700 border-blue-300 bg-blue-50")}>
-                  {clientFilter || "Клиент"} <ChevronDown className="w-3.5 h-3.5 ml-1 opacity-50" />
+                  {clientFilter || "Client"} <ChevronDown className="w-3.5 h-3.5 ml-1 opacity-50" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => setClientFilter("")}>Все клиенты</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setClientFilter("")}>All clients</DropdownMenuItem>
                 {clientOptions.map(c => <DropdownMenuItem key={c} onClick={() => setClientFilter(c)}>{c}</DropdownMenuItem>)}
               </DropdownMenuContent>
             </DropdownMenu>
@@ -193,11 +187,11 @@ export function ContractorsPage({ subPage, onNavigate }: ContractorsPageProps) {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className={cn("h-9 text-sm bg-gray-50 border-gray-200", contractorFilter && "text-blue-700 border-blue-300 bg-blue-50")}>
-                {contractorFilter || "Подрядчик"} <ChevronDown className="w-3.5 h-3.5 ml-1 opacity-50" />
+                {contractorFilter || "Contractor"} <ChevronDown className="w-3.5 h-3.5 ml-1 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => setContractorFilter("")}>Все подрядчики</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setContractorFilter("")}>All contractors</DropdownMenuItem>
               {contractorOptions.map(c => <DropdownMenuItem key={c} onClick={() => setContractorFilter(c)}>{c}</DropdownMenuItem>)}
             </DropdownMenuContent>
           </DropdownMenu>
@@ -205,11 +199,11 @@ export function ContractorsPage({ subPage, onNavigate }: ContractorsPageProps) {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className={cn("h-9 text-sm bg-gray-50 border-gray-200", responsibleFilter && "text-blue-700 border-blue-300 bg-blue-50")}>
-                {responsibleFilter || "Ответственный"} <ChevronDown className="w-3.5 h-3.5 ml-1 opacity-50" />
+                {responsibleFilter || "Responsible"} <ChevronDown className="w-3.5 h-3.5 ml-1 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => setResponsibleFilter("")}>Все</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setResponsibleFilter("")}>All</DropdownMenuItem>
               {responsibleOptions.map(r => <DropdownMenuItem key={r} onClick={() => setResponsibleFilter(r)}>{r}</DropdownMenuItem>)}
             </DropdownMenuContent>
           </DropdownMenu>
@@ -217,11 +211,11 @@ export function ContractorsPage({ subPage, onNavigate }: ContractorsPageProps) {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className={cn("h-9 text-sm bg-gray-50 border-gray-200", statusFilter && "text-blue-700 border-blue-300 bg-blue-50")}>
-                {statusFilter || "Статус"} <ChevronDown className="w-3.5 h-3.5 ml-1 opacity-50" />
+                {statusFilter || "Status"} <ChevronDown className="w-3.5 h-3.5 ml-1 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => setStatusFilter("")}>Все статусы</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setStatusFilter("")}>All statuses</DropdownMenuItem>
               {CONTRACTOR_STATUSES.map(s => (
                 <DropdownMenuItem key={s} onClick={() => setStatusFilter(s)}>
                   <span className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: CONTRACTOR_STATUS_COLORS[s] }} />
@@ -235,11 +229,11 @@ export function ContractorsPage({ subPage, onNavigate }: ContractorsPageProps) {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm" className={cn("h-9 text-sm bg-gray-50 border-gray-200", directionFilter && "text-blue-700 border-blue-300 bg-blue-50")}>
-                  {directionFilter || "Направление"} <ChevronDown className="w-3.5 h-3.5 ml-1 opacity-50" />
+                  {directionFilter || "Direction"} <ChevronDown className="w-3.5 h-3.5 ml-1 opacity-50" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => setDirectionFilter("")}>Все направления</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setDirectionFilter("")}>All directions</DropdownMenuItem>
                 {directionOptions.map(d => <DropdownMenuItem key={d} onClick={() => setDirectionFilter(d)}>{d}</DropdownMenuItem>)}
               </DropdownMenuContent>
             </DropdownMenu>
@@ -249,11 +243,11 @@ export function ContractorsPage({ subPage, onNavigate }: ContractorsPageProps) {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm" className={cn("h-9 text-sm bg-gray-50 border-gray-200", yearFilter && "text-blue-700 border-blue-300 bg-blue-50")}>
-                  {yearFilter || "Год"} <ChevronDown className="w-3.5 h-3.5 ml-1 opacity-50" />
+                  {yearFilter || "Year"} <ChevronDown className="w-3.5 h-3.5 ml-1 opacity-50" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => setYearFilter("")}>Все годы</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setYearFilter("")}>All years</DropdownMenuItem>
                 {yearOptions.map(y => <DropdownMenuItem key={y} onClick={() => setYearFilter(y)}>{y}</DropdownMenuItem>)}
               </DropdownMenuContent>
             </DropdownMenu>
@@ -263,11 +257,11 @@ export function ContractorsPage({ subPage, onNavigate }: ContractorsPageProps) {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm" className={cn("h-9 text-sm bg-gray-50 border-gray-200", monthFilter && "text-blue-700 border-blue-300 bg-blue-50")}>
-                  {monthFilter || "Месяц"} <ChevronDown className="w-3.5 h-3.5 ml-1 opacity-50" />
+                  {monthFilter || "Month"} <ChevronDown className="w-3.5 h-3.5 ml-1 opacity-50" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => setMonthFilter("")}>Все месяцы</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setMonthFilter("")}>All months</DropdownMenuItem>
                 {monthOptions.map(m => <DropdownMenuItem key={m} onClick={() => setMonthFilter(m)}>{m}</DropdownMenuItem>)}
               </DropdownMenuContent>
             </DropdownMenu>
@@ -277,11 +271,11 @@ export function ContractorsPage({ subPage, onNavigate }: ContractorsPageProps) {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm" className={cn("h-9 text-sm bg-gray-50 border-gray-200", docManagerFilter && "text-blue-700 border-blue-300 bg-blue-50")}>
-                  {docManagerFilter || "Менеджер ДО"} <ChevronDown className="w-3.5 h-3.5 ml-1 opacity-50" />
+                  {docManagerFilter || "Doc Manager"} <ChevronDown className="w-3.5 h-3.5 ml-1 opacity-50" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => setDocManagerFilter("")}>Все</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setDocManagerFilter("")}>All</DropdownMenuItem>
                 {docManagerOptions.map(d => <DropdownMenuItem key={d} onClick={() => setDocManagerFilter(d)}>{d}</DropdownMenuItem>)}
               </DropdownMenuContent>
             </DropdownMenu>
@@ -294,11 +288,11 @@ export function ContractorsPage({ subPage, onNavigate }: ContractorsPageProps) {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-52">
-              <DropdownMenuLabel className="text-xs text-gray-400">Настройка фильтров</DropdownMenuLabel>
+              <DropdownMenuLabel className="text-xs text-gray-400">Filter settings</DropdownMenuLabel>
               <DropdownMenuSeparator />
               {(["direction", "year", "month", "docManager"] as Array<keyof typeof visibleFilters>).map((key) => {
                 const labels: Record<keyof typeof visibleFilters, string> = {
-                  direction: "Направление", year: "Год", month: "Месяц", docManager: "Менеджер ДО",
+                  direction: "Direction", year: "Year", month: "Month", docManager: "Doc Manager",
                 };
                 return (
                   <DropdownMenuCheckboxItem key={key} checked={visibleFilters[key]} onCheckedChange={() => toggleFilter(key)}>
@@ -313,27 +307,26 @@ export function ContractorsPage({ subPage, onNavigate }: ContractorsPageProps) {
       </div>
 
       <div className="pb-16">
-        {/* Sticky column headers */}
         <div className="sticky top-0 bg-white z-10 border-b border-gray-100">
           <div className="px-8 py-2" style={{ display: "grid", gridTemplateColumns: colTemplate, alignItems: "center" }}>
             <div className="w-4" />
-            <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Подрядчик</span>
-            <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">ID проекта</span>
+            <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Contractor</span>
+            <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Project ID</span>
             <button
               type="button"
               className="inline-flex items-center gap-1 text-[10px] font-semibold text-gray-400 uppercase tracking-wider hover:text-gray-600 transition-colors"
               onClick={() => setMonthSort(prev => prev === null ? "asc" : prev === "asc" ? "desc" : null)}
             >
-              Месяц
+              Month
               {monthSort === "asc" && <ArrowUp className="w-3.5 h-3.5" />}
               {monthSort === "desc" && <ArrowDown className="w-3.5 h-3.5" />}
             </button>
-            {subPage === "client" && <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Клиент</span>}
-            <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Направление</span>
-            <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Ответственный</span>
-            <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Менеджер ДО</span>
-            <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Прогресс</span>
-            <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Сумма</span>
+            {subPage === "client" && <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Client</span>}
+            <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Direction</span>
+            <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Responsible</span>
+            <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Doc Manager</span>
+            <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Progress</span>
+            <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Amount</span>
           </div>
         </div>
 
@@ -384,14 +377,14 @@ export function ContractorsPage({ subPage, onNavigate }: ContractorsPageProps) {
                     <div className="sticky top-0 z-20 bg-white">
                       <div className="grid text-[10px] uppercase text-gray-400 tracking-wider" style={{ gridTemplateColumns: DOC_COL, alignItems: "center" }}>
                         <span />
-                        <span className="px-3 py-2 font-medium">Тип</span>
-                        <span className="px-3 py-2 font-medium">Статус</span>
-                        <span className="px-3 py-2 text-right font-medium">Сумма</span>
-                        <span className="px-3 py-2 font-medium">Документ №</span>
-                        <span className="px-3 py-2 font-medium">Оплата план</span>
-                        <span className="px-3 py-2 font-medium">Оплата факт</span>
-                        <span className="px-3 py-2 font-medium">Смета</span>
-                        <span className="px-3 py-2 font-medium">Комментарий</span>
+                        <span className="px-3 py-2 font-medium">Type</span>
+                        <span className="px-3 py-2 font-medium">Status</span>
+                        <span className="px-3 py-2 text-right font-medium">Amount</span>
+                        <span className="px-3 py-2 font-medium">Doc No.</span>
+                        <span className="px-3 py-2 font-medium">Payment Plan</span>
+                        <span className="px-3 py-2 font-medium">Payment Fact</span>
+                        <span className="px-3 py-2 font-medium">Estimate</span>
+                        <span className="px-3 py-2 font-medium">Comment</span>
                       </div>
                     </div>
 
@@ -457,7 +450,7 @@ export function ContractorsPage({ subPage, onNavigate }: ContractorsPageProps) {
                               {doc.isOverdue ? (
                                 <>
                                   <span className="text-red-500">{doc.datePlan}</span>
-                                  <span className="text-[11px] text-red-500">+{doc.overdueDays} дн.</span>
+                                  <span className="text-[11px] text-red-500">+{doc.overdueDays} days</span>
                                 </>
                               ) : (
                                 <span>{doc.datePlan ?? "—"}</span>
@@ -485,7 +478,7 @@ export function ContractorsPage({ subPage, onNavigate }: ContractorsPageProps) {
                               className="cursor-pointer hover:bg-gray-100 rounded px-1.5 py-0.5 -mx-1.5 inline-block min-h-[24px] min-w-[40px] transition-colors"
                               onClick={() => console.log("edit comment", doc.id)}
                             >
-                              {doc.comment || <span className="text-gray-300 italic">Добавить...</span>}
+                              {doc.comment || <span className="text-gray-300 italic">Add...</span>}
                             </span>
                           </div>
                         </div>
@@ -493,7 +486,7 @@ export function ContractorsPage({ subPage, onNavigate }: ContractorsPageProps) {
 
                       <div className="pl-8 pt-1 pb-2">
                         <button className="text-xs text-gray-400 hover:text-gray-600 transition-colors py-1" onClick={(e) => { e.stopPropagation(); console.log("add doc", project.id); }}>
-                          + Добавить документ
+                          + Add document
                         </button>
                       </div>
                     </div>
@@ -515,123 +508,123 @@ export default ContractorsPage;
 export const CLIENT_CONTRACTORS: ContractorProject[] = [
   {
     id: 1,
-    contractor: "ИП Смирнов А.В.",
+    contractor: "SP Smirnov A.V.",
     projectCode: "YAN-1",
-    month: "Март",
+    month: "March",
     year: 2026,
-    client: "Яндекс",
-    direction: "Медиа",
-    responsible: { initials: "КВ", name: "Кирилл В.", color: "bg-slate-400" },
-    doManager: { initials: "ИМ", name: "Инна М.", color: "bg-stone-400" },
+    client: "Yandex",
+    direction: "Media",
+    responsible: { initials: "KV", name: "Kirill V.", color: "bg-slate-400" },
+    doManager: { initials: "IM", name: "Inna M.", color: "bg-stone-400" },
     progress: { done: 2, total: 5 },
     sum: 1850000,
     isOverdue: true,
     documents: [
-      { id: 1, type: "Договор ГПХ", status: "Подписан ОРИГ", sum: 1850000, docNumber: "ГПХ-44", datePlan: "01.03.2026", dateFact: "28.02.2026", hasFile: true, comment: "" },
-      { id: 2, type: "Акт ГПХ", status: "Получен", sum: 1850000, docNumber: "АГ-44", datePlan: "01.03.2026", dateFact: null, hasFile: false, comment: "", isOverdue: true, overdueDays: 103 },
-      { id: 3, type: "Счёт", status: "Запрошен", sum: 1850000, docNumber: null, datePlan: "15.03.2026", dateFact: null, hasFile: false, comment: "" },
-      { id: 4, type: "УПД", status: "Не создан", sum: null, docNumber: null, datePlan: "31.03.2026", dateFact: null, hasFile: false, comment: "" },
-      { id: 5, type: "Акт", status: "Не создан", sum: null, docNumber: null, datePlan: "05.04.2026", dateFact: null, hasFile: false, comment: "" },
+      { id: 1, type: "Freelance Contract", status: "Signed ORIG", sum: 1850000, docNumber: "FC-44", datePlan: "01.03.2026", dateFact: "28.02.2026", hasFile: true, comment: "" },
+      { id: 2, type: "Freelance Act",      status: "Received",    sum: 1850000, docNumber: "FA-44", datePlan: "01.03.2026", dateFact: null,         hasFile: false, comment: "", isOverdue: true, overdueDays: 103 },
+      { id: 3, type: "Invoice",            status: "Requested",   sum: 1850000, docNumber: null,    datePlan: "15.03.2026", dateFact: null,         hasFile: false, comment: "" },
+      { id: 4, type: "UPD",                status: "Not Created", sum: null,    docNumber: null,    datePlan: "31.03.2026", dateFact: null,         hasFile: false, comment: "" },
+      { id: 5, type: "Act",                status: "Not Created", sum: null,    docNumber: null,    datePlan: "05.04.2026", dateFact: null,         hasFile: false, comment: "" },
     ],
   },
   {
     id: 2,
-    contractor: "ООО Медиасервис",
+    contractor: "LLC MediaService",
     projectCode: "SBR-1",
-    month: "Январь",
+    month: "January",
     year: 2026,
-    client: "Сбер",
-    direction: "ТВ",
-    responsible: { initials: "АС", name: "Алина С.", color: "bg-zinc-400" },
-    doManager: { initials: "ПВ", name: "Полина В.", color: "bg-neutral-400" },
+    client: "Sber",
+    direction: "TV",
+    responsible: { initials: "AS", name: "Alina S.", color: "bg-zinc-400" },
+    doManager: { initials: "PV", name: "Polina V.", color: "bg-neutral-400" },
     progress: { done: 4, total: 4 },
     sum: 8400000,
     isOverdue: false,
     documents: [
-      { id: 1, type: "Договор", status: "Подписан ОРИГ", sum: 8400000, docNumber: "Д-118", datePlan: "15.01.2026", dateFact: "12.01.2026", hasFile: true, comment: "" },
-      { id: 2, type: "Счёт", status: "Подписан ЭДО", sum: 8400000, docNumber: "С-554", datePlan: "20.01.2026", dateFact: "18.01.2026", hasFile: false, comment: "" },
-      { id: 3, type: "Акт", status: "Подписан ОРИГ", sum: 8400000, docNumber: "А-89", datePlan: "31.01.2026", dateFact: "29.01.2026", hasFile: false, comment: "ТВ-размещение февраль" },
-      { id: 4, type: "УПД", status: "Подписан ЭДО", sum: 8400000, docNumber: "У-34", datePlan: "05.02.2026", dateFact: "03.02.2026", hasFile: false, comment: "" },
+      { id: 1, type: "Contract", status: "Signed ORIG", sum: 8400000, docNumber: "C-118",  datePlan: "15.01.2026", dateFact: "12.01.2026", hasFile: true,  comment: "" },
+      { id: 2, type: "Invoice",  status: "Signed EDO",  sum: 8400000, docNumber: "I-554",  datePlan: "20.01.2026", dateFact: "18.01.2026", hasFile: false, comment: "" },
+      { id: 3, type: "Act",      status: "Signed ORIG", sum: 8400000, docNumber: "A-89",   datePlan: "31.01.2026", dateFact: "29.01.2026", hasFile: false, comment: "TV placement February" },
+      { id: 4, type: "UPD",      status: "Signed EDO",  sum: 8400000, docNumber: "U-34",   datePlan: "05.02.2026", dateFact: "03.02.2026", hasFile: false, comment: "" },
     ],
   },
   {
     id: 3,
-    contractor: "ИП Горелова Т.С.",
+    contractor: "SP Gorelova T.S.",
     projectCode: "AVI-2",
-    month: "Март",
+    month: "March",
     year: 2026,
-    client: "Авито",
-    direction: "Инфлюенс",
-    responsible: { initials: "КП", name: "Кирилл П.", color: "bg-slate-400" },
-    doManager: { initials: "ИМ", name: "Инна М.", color: "bg-stone-400" },
+    client: "Avito",
+    direction: "Influence",
+    responsible: { initials: "KP", name: "Kirill P.", color: "bg-slate-400" },
+    doManager: { initials: "IM", name: "Inna M.", color: "bg-stone-400" },
     progress: { done: 1, total: 4 },
     sum: 980000,
     isOverdue: true,
     documents: [
-      { id: 1, type: "Договор ГПХ", status: "Подписан ОРИГ", sum: 980000, docNumber: "ГПХ-51", datePlan: "10.03.2026", dateFact: "08.03.2026", hasFile: true, comment: "" },
-      { id: 2, type: "Акт ГПХ", status: "Запрошен", sum: 980000, docNumber: null, datePlan: "01.04.2026", dateFact: null, hasFile: false, comment: "Жду от блогера", isOverdue: true, overdueDays: 72 },
-      { id: 3, type: "Чек", status: "Не создан", sum: null, docNumber: null, datePlan: "15.04.2026", dateFact: null, hasFile: false, comment: "" },
-      { id: 4, type: "Счёт", status: "Не создан", sum: null, docNumber: null, datePlan: "20.04.2026", dateFact: null, hasFile: false, comment: "" },
+      { id: 1, type: "Freelance Contract", status: "Signed ORIG", sum: 980000, docNumber: "FC-51", datePlan: "10.03.2026", dateFact: "08.03.2026", hasFile: true,  comment: "" },
+      { id: 2, type: "Freelance Act",      status: "Requested",   sum: 980000, docNumber: null,    datePlan: "01.04.2026", dateFact: null,         hasFile: false, comment: "Waiting from blogger", isOverdue: true, overdueDays: 72 },
+      { id: 3, type: "Receipt",            status: "Not Created", sum: null,   docNumber: null,    datePlan: "15.04.2026", dateFact: null,         hasFile: false, comment: "" },
+      { id: 4, type: "Invoice",            status: "Not Created", sum: null,   docNumber: null,    datePlan: "20.04.2026", dateFact: null,         hasFile: false, comment: "" },
     ],
   },
   {
     id: 4,
-    contractor: "ООО Контент Лаб",
+    contractor: "LLC Content Lab",
     projectCode: "HOZ-3",
-    month: "Февраль",
+    month: "February",
     year: 2026,
     client: "—",
-    direction: "Контент",
-    responsible: { initials: "АС", name: "Алина С.", color: "bg-zinc-400" },
-    doManager: { initials: "ПВ", name: "Полина В.", color: "bg-neutral-400" },
+    direction: "Content",
+    responsible: { initials: "AS", name: "Alina S.", color: "bg-zinc-400" },
+    doManager: { initials: "PV", name: "Polina V.", color: "bg-neutral-400" },
     progress: { done: 3, total: 5 },
     sum: 2200000,
     isOverdue: false,
     documents: [
-      { id: 1, type: "Договор", status: "Подписан ОРИГ", sum: 2200000, docNumber: "Д-77", datePlan: "01.02.2026", dateFact: "29.01.2026", hasFile: true, comment: "" },
-      { id: 2, type: "Приложение", status: "Подписан ОРИГ", sum: 2200000, docNumber: "П-12", datePlan: "05.02.2026", dateFact: "03.02.2026", hasFile: false, comment: "" },
-      { id: 3, type: "Счёт", status: "Подписан ЭДО", sum: 2200000, docNumber: "С-203", datePlan: "10.02.2026", dateFact: "08.02.2026", hasFile: false, comment: "" },
-      { id: 4, type: "Акт", status: "Получен", sum: 2200000, docNumber: "А-44", datePlan: "28.02.2026", dateFact: null, hasFile: false, comment: "На проверке у бухгалтера" },
-      { id: 5, type: "УПД", status: "Не создан", sum: null, docNumber: null, datePlan: "05.03.2026", dateFact: null, hasFile: false, comment: "" },
+      { id: 1, type: "Contract", status: "Signed ORIG", sum: 2200000, docNumber: "C-77",   datePlan: "01.02.2026", dateFact: "29.01.2026", hasFile: true,  comment: "" },
+      { id: 2, type: "Annex",    status: "Signed ORIG", sum: 2200000, docNumber: "A-12",   datePlan: "05.02.2026", dateFact: "03.02.2026", hasFile: false, comment: "" },
+      { id: 3, type: "Invoice",  status: "Signed EDO",  sum: 2200000, docNumber: "I-203",  datePlan: "10.02.2026", dateFact: "08.02.2026", hasFile: false, comment: "" },
+      { id: 4, type: "Act",      status: "Received",    sum: 2200000, docNumber: "A-44",   datePlan: "28.02.2026", dateFact: null,         hasFile: false, comment: "Under accountant review" },
+      { id: 5, type: "UPD",      status: "Not Created", sum: null,    docNumber: null,     datePlan: "05.03.2026", dateFact: null,         hasFile: false, comment: "" },
     ],
   },
   {
     id: 5,
-    contractor: "ИП Рябов Д.О.",
+    contractor: "SP Ryabov D.O.",
     projectCode: "YAN-3",
-    month: "Февраль",
+    month: "February",
     year: 2026,
-    client: "Яндекс",
-    direction: "Контекст",
-    responsible: { initials: "АС", name: "Алина С.", color: "bg-zinc-400" },
-    doManager: { initials: "ИМ", name: "Инна М.", color: "bg-stone-400" },
+    client: "Yandex",
+    direction: "Context",
+    responsible: { initials: "AS", name: "Alina S.", color: "bg-zinc-400" },
+    doManager: { initials: "IM", name: "Inna M.", color: "bg-stone-400" },
     progress: { done: 0, total: 3 },
     sum: 550000,
     isOverdue: true,
     documents: [
-      { id: 1, type: "Договор ГПХ", status: "Запрошен", sum: 550000, docNumber: null, datePlan: "15.02.2026", dateFact: null, hasFile: true, comment: "Напомнить подрядчику", isOverdue: true, overdueDays: 117 },
-      { id: 2, type: "Акт ГПХ", status: "Не создан", sum: null, docNumber: null, datePlan: "01.03.2026", dateFact: null, hasFile: false, comment: "" },
-      { id: 3, type: "Чек", status: "Не создан", sum: null, docNumber: null, datePlan: "05.03.2026", dateFact: null, hasFile: false, comment: "" },
+      { id: 1, type: "Freelance Contract", status: "Requested",   sum: 550000, docNumber: null, datePlan: "15.02.2026", dateFact: null, hasFile: true,  comment: "Remind contractor", isOverdue: true, overdueDays: 117 },
+      { id: 2, type: "Freelance Act",      status: "Not Created", sum: null,   docNumber: null, datePlan: "01.03.2026", dateFact: null, hasFile: false, comment: "" },
+      { id: 3, type: "Receipt",            status: "Not Created", sum: null,   docNumber: null, datePlan: "05.03.2026", dateFact: null, hasFile: false, comment: "" },
     ],
   },
   {
     id: 6,
-    contractor: "ООО Диджитал Про",
+    contractor: "LLC Digital Pro",
     projectCode: "HOZ-1",
-    month: "Апрель",
+    month: "April",
     year: 2026,
     client: "—",
-    direction: "Медиа",
-    responsible: { initials: "КП", name: "Кирилл П.", color: "bg-slate-400" },
-    doManager: { initials: "ПВ", name: "Полина В.", color: "bg-neutral-400" },
+    direction: "Media",
+    responsible: { initials: "KP", name: "Kirill P.", color: "bg-slate-400" },
+    doManager: { initials: "PV", name: "Polina V.", color: "bg-neutral-400" },
     progress: { done: 2, total: 4 },
     sum: 3700000,
     isOverdue: false,
     documents: [
-      { id: 1, type: "Договор", status: "Подписан ОРИГ", sum: 3700000, docNumber: "Д-99", datePlan: "05.04.2026", dateFact: "03.04.2026", hasFile: true, comment: "" },
-      { id: 2, type: "ДС", status: "Подписан ОРИГ", sum: 3700000, docNumber: "ДС-14", datePlan: "10.04.2026", dateFact: "09.04.2026", hasFile: false, comment: "" },
-      { id: 3, type: "Счёт", status: "Получен", sum: 3700000, docNumber: "С-612", datePlan: "20.04.2026", dateFact: null, hasFile: false, comment: "Ждём подтверждения" },
-      { id: 4, type: "Акт", status: "Не создан", sum: null, docNumber: null, datePlan: "30.04.2026", dateFact: null, hasFile: false, comment: "" },
+      { id: 1, type: "Contract",  status: "Signed ORIG", sum: 3700000, docNumber: "C-99",   datePlan: "05.04.2026", dateFact: "03.04.2026", hasFile: true,  comment: "" },
+      { id: 2, type: "Addendum",  status: "Signed ORIG", sum: 3700000, docNumber: "AD-14",  datePlan: "10.04.2026", dateFact: "09.04.2026", hasFile: false, comment: "" },
+      { id: 3, type: "Invoice",   status: "Received",    sum: 3700000, docNumber: "I-612",  datePlan: "20.04.2026", dateFact: null,         hasFile: false, comment: "Awaiting confirmation" },
+      { id: 4, type: "Act",       status: "Not Created", sum: null,    docNumber: null,     datePlan: "30.04.2026", dateFact: null,         hasFile: false, comment: "" },
     ],
   },
 ];
@@ -639,74 +632,74 @@ export const CLIENT_CONTRACTORS: ContractorProject[] = [
 export const INTERNAL_CONTRACTORS: ContractorProject[] = [
   {
     id: 101,
-    contractor: "ИП Петров С.И.",
+    contractor: "SP Petrov S.I.",
     projectCode: "HOZ-1",
-    month: "Январь",
+    month: "January",
     year: 2026,
     direction: "IT",
-    responsible: { initials: "МР", name: "Максим Р.", color: "bg-slate-400" },
-    doManager: { initials: "НК", name: "Наталья К.", color: "bg-stone-400" },
+    responsible: { initials: "MR", name: "Maxim R.", color: "bg-slate-400" },
+    doManager: { initials: "NK", name: "Natalia K.", color: "bg-stone-400" },
     progress: { done: 2, total: 3 },
     sum: 180000,
     isOverdue: false,
     documents: [
-      { id: 1, type: "Договор", status: "Подписан ОРИГ", sum: 180000, docNumber: "Д-201", datePlan: "10.01.2026", dateFact: "09.01.2026", hasFile: true, comment: "" },
-      { id: 2, type: "Акт", status: "Подписан ОРИГ", sum: 180000, docNumber: "А-101", datePlan: "31.01.2026", dateFact: "30.01.2026", hasFile: false, comment: "" },
-      { id: 3, type: "Счёт", status: "Не создан", sum: null, docNumber: null, datePlan: "05.02.2026", dateFact: null, hasFile: false, comment: "" },
+      { id: 1, type: "Contract", status: "Signed ORIG", sum: 180000, docNumber: "C-201", datePlan: "10.01.2026", dateFact: "09.01.2026", hasFile: true,  comment: "" },
+      { id: 2, type: "Act",      status: "Signed ORIG", sum: 180000, docNumber: "A-101", datePlan: "31.01.2026", dateFact: "30.01.2026", hasFile: false, comment: "" },
+      { id: 3, type: "Invoice",  status: "Not Created", sum: null,   docNumber: null,    datePlan: "05.02.2026", dateFact: null,         hasFile: false, comment: "" },
     ],
   },
   {
     id: 102,
-    contractor: "ООО Клинсервис",
+    contractor: "LLC CleanService",
     projectCode: "HOZ-2",
-    month: "Февраль",
+    month: "February",
     year: 2026,
-    direction: "АХО",
-    responsible: { initials: "НК", name: "Наталья К.", color: "bg-stone-400" },
-    doManager: { initials: "МР", name: "Максим Р.", color: "bg-slate-400" },
+    direction: "Admin",
+    responsible: { initials: "NK", name: "Natalia K.", color: "bg-stone-400" },
+    doManager: { initials: "MR", name: "Maxim R.", color: "bg-slate-400" },
     progress: { done: 3, total: 3 },
     sum: 95000,
     isOverdue: false,
     documents: [
-      { id: 1, type: "Договор", status: "Подписан ОРИГ", sum: 95000, docNumber: "Д-202", datePlan: "01.02.2026", dateFact: "30.01.2026", hasFile: true, comment: "" },
-      { id: 2, type: "Счёт", status: "Подписан ЭДО", sum: 95000, docNumber: "С-301", datePlan: "15.02.2026", dateFact: "14.02.2026", hasFile: false, comment: "" },
-      { id: 3, type: "Акт", status: "Подписан ОРИГ", sum: 95000, docNumber: "А-102", datePlan: "28.02.2026", dateFact: "27.02.2026", hasFile: false, comment: "" },
+      { id: 1, type: "Contract", status: "Signed ORIG", sum: 95000, docNumber: "C-202", datePlan: "01.02.2026", dateFact: "30.01.2026", hasFile: true,  comment: "" },
+      { id: 2, type: "Invoice",  status: "Signed EDO",  sum: 95000, docNumber: "I-301", datePlan: "15.02.2026", dateFact: "14.02.2026", hasFile: false, comment: "" },
+      { id: 3, type: "Act",      status: "Signed ORIG", sum: 95000, docNumber: "A-102", datePlan: "28.02.2026", dateFact: "27.02.2026", hasFile: false, comment: "" },
     ],
   },
   {
     id: 103,
-    contractor: "ИП Захарова Л.Д.",
+    contractor: "SP Zakharova L.D.",
     projectCode: "HOZ-3",
-    month: "Март",
+    month: "March",
     year: 2026,
     direction: "HR",
-    responsible: { initials: "МР", name: "Максим Р.", color: "bg-slate-400" },
-    doManager: { initials: "НК", name: "Наталья К.", color: "bg-stone-400" },
+    responsible: { initials: "MR", name: "Maxim R.", color: "bg-slate-400" },
+    doManager: { initials: "NK", name: "Natalia K.", color: "bg-stone-400" },
     progress: { done: 0, total: 2 },
     sum: 240000,
     isOverdue: true,
     documents: [
-      { id: 1, type: "Договор ГПХ", status: "Запрошен", sum: 240000, docNumber: null, datePlan: "01.03.2026", dateFact: null, hasFile: false, comment: "", isOverdue: true, overdueDays: 103 },
-      { id: 2, type: "Акт ГПХ", status: "Не создан", sum: null, docNumber: null, datePlan: "31.03.2026", dateFact: null, hasFile: false, comment: "" },
+      { id: 1, type: "Freelance Contract", status: "Requested",   sum: 240000, docNumber: null, datePlan: "01.03.2026", dateFact: null, hasFile: false, comment: "", isOverdue: true, overdueDays: 103 },
+      { id: 2, type: "Freelance Act",      status: "Not Created", sum: null,   docNumber: null, datePlan: "31.03.2026", dateFact: null, hasFile: false, comment: "" },
     ],
   },
   {
     id: 104,
-    contractor: "ООО Техноаренда",
+    contractor: "LLC TechnoRent",
     projectCode: "HOZ-4",
-    month: "Март",
+    month: "March",
     year: 2026,
     direction: "IT",
-    responsible: { initials: "НК", name: "Наталья К.", color: "bg-stone-400" },
-    doManager: { initials: "МР", name: "Максим Р.", color: "bg-slate-400" },
+    responsible: { initials: "NK", name: "Natalia K.", color: "bg-stone-400" },
+    doManager: { initials: "MR", name: "Maxim R.", color: "bg-slate-400" },
     progress: { done: 1, total: 4 },
     sum: 320000,
     isOverdue: false,
     documents: [
-      { id: 1, type: "Договор", status: "Подписан ОРИГ", sum: 320000, docNumber: "Д-205", datePlan: "05.03.2026", dateFact: "04.03.2026", hasFile: true, comment: "" },
-      { id: 2, type: "Счёт", status: "Получен", sum: 320000, docNumber: "С-412", datePlan: "20.03.2026", dateFact: null, hasFile: false, comment: "Ждём оригинал" },
-      { id: 3, type: "Акт", status: "Не создан", sum: null, docNumber: null, datePlan: "31.03.2026", dateFact: null, hasFile: false, comment: "" },
-      { id: 4, type: "УПД", status: "Не создан", sum: null, docNumber: null, datePlan: "05.04.2026", dateFact: null, hasFile: false, comment: "" },
+      { id: 1, type: "Contract", status: "Signed ORIG", sum: 320000, docNumber: "C-205", datePlan: "05.03.2026", dateFact: "04.03.2026", hasFile: true,  comment: "" },
+      { id: 2, type: "Invoice",  status: "Received",    sum: 320000, docNumber: "I-412", datePlan: "20.03.2026", dateFact: null,         hasFile: false, comment: "Awaiting original" },
+      { id: 3, type: "Act",      status: "Not Created", sum: null,   docNumber: null,    datePlan: "31.03.2026", dateFact: null,         hasFile: false, comment: "" },
+      { id: 4, type: "UPD",      status: "Not Created", sum: null,   docNumber: null,    datePlan: "05.04.2026", dateFact: null,         hasFile: false, comment: "" },
     ],
   },
 ];

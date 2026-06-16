@@ -17,22 +17,22 @@ import {
 // ── Formatters ─────────────────────────────────────────────────────────────────
 
 function fmtK(n: number): string {
-  return Math.round(n / 1000).toLocaleString("ru-RU") + "к";
+  return Math.round(n / 1000).toLocaleString("en-US") + "k";
 }
 
 function fmtAxisM(n: number): string {
   if (n === 0) return "0";
-  return (n / 1_000_000).toLocaleString("ru-RU", {
+  return (n / 1_000_000).toLocaleString("en-US", {
     minimumFractionDigits: 1,
     maximumFractionDigits: 1,
-  }) + " М";
+  }) + " M";
 }
 
 function fmtMln(n: number): string {
-  return (n / 1_000_000).toLocaleString("ru-RU", {
+  return (n / 1_000_000).toLocaleString("en-US", {
     minimumFractionDigits: 1,
     maximumFractionDigits: 1,
-  }) + " млн ₽";
+  }) + " mln ₽";
 }
 
 // ── Segment toggle ─────────────────────────────────────────────────────────────
@@ -125,7 +125,7 @@ function ShowMoreBtn({ showAll, count, onToggle }: {
       onClick={onToggle}
       className="text-[11px] text-blue-500 hover:text-blue-600 text-left mt-0.5"
     >
-      {showAll ? "− Свернуть" : `+ Показать прочие (${count})`}
+      {showAll ? "− Collapse" : `+ Show more (${count})`}
     </button>
   );
 }
@@ -229,8 +229,8 @@ function SimpleHBar({ label, value, max, color, right, onClick }: {
 }
 
 const BAR_LEGEND = [
-  { color: "#BFDBFE", label: "Выставлено" },
-  { color: "#60A5FA", label: "Из них просрочено" },
+  { color: "#BFDBFE", label: "Billed" },
+  { color: "#60A5FA", label: "Of which overdue" },
 ];
 
 // ── Analytics cards (data injected by parent) ─────────────────────────────────
@@ -252,11 +252,11 @@ function ClientDebtCard({ data, showAll, onToggle }: {
 
   return (
     <CardShell
-      title="Долг по клиентам"
-      subtitle="выставлено клиентам / из них просрочено"
+      title="Debt by Client"
+      subtitle="billed to clients / of which overdue"
       action={
         <SegmentToggle
-          options={[{ id: "sum" as const, label: "по долгу" }, { id: "overdue" as const, label: "по просрочке" }]}
+          options={[{ id: "sum" as const, label: "by debt" }, { id: "overdue" as const, label: "by overdue" }]}
           value={sort}
           onChange={setSort}
         />
@@ -287,11 +287,11 @@ function KamDebtCard({ data, showAll, onToggle }: {
 
   return (
     <CardShell
-      title="Долг по КАМам"
-      subtitle="выставлено / из них просрочено"
+      title="Debt by KAM"
+      subtitle="billed / of which overdue"
       action={
         <SegmentToggle
-          options={[{ id: "sum" as const, label: "по долгу" }, { id: "overdue" as const, label: "по просрочке" }]}
+          options={[{ id: "sum" as const, label: "by debt" }, { id: "overdue" as const, label: "by overdue" }]}
           value={sort}
           onChange={setSort}
         />
@@ -329,11 +329,11 @@ function AgingCard({ data, kpi }: {
 
   return (
     <CardShell
-      title="Просрочка по срокам"
-      subtitle={`всего просрочено ${fmtMln(kpi.overdue)} · ${kpi.overdueCount} кл.`}
+      title="Overdue by Age"
+      subtitle={`total overdue ${fmtMln(kpi.overdue)} · ${kpi.overdueCount} cl.`}
       action={
         <SegmentToggle
-          options={[{ id: "amount" as const, label: "₽" }, { id: "clients" as const, label: "клиенты" }]}
+          options={[{ id: "amount" as const, label: "₽" }, { id: "clients" as const, label: "clients" }]}
           value={mode}
           onChange={setMode}
         />
@@ -347,11 +347,11 @@ function AgingCard({ data, kpi }: {
             value={mode === "amount" ? a.amount : a.clients}
             max={max}
             color={COLORS[i]}
-            right={mode === "amount" ? fmtK(a.amount) : a.clients + " кл."}
+            right={mode === "amount" ? fmtK(a.amount) : a.clients + " cl."}
           />
         ))}
       </div>
-      <p className="text-[10px] text-gray-400">чем темнее — тем старше долг</p>
+      <p className="text-[10px] text-gray-400">darker = older debt</p>
     </CardShell>
   );
 }
@@ -359,7 +359,7 @@ function AgingCard({ data, kpi }: {
 function ReasonsCard({ data }: { data: ReasonRow[] }) {
   const max = Math.max(...data.map(r => r.clients));
   return (
-    <CardShell title="Причины задержек" subtitle="клиентов с задержкой">
+    <CardShell title="Delay Reasons" subtitle="clients with delays">
       <div className="space-y-0.5">
         {data.map(r => (
           <SimpleHBar
@@ -368,7 +368,7 @@ function ReasonsCard({ data }: { data: ReasonRow[] }) {
             value={r.clients}
             max={max}
             color="#60A5FA"
-            right={r.clients + " кл."}
+            right={r.clients + " cl."}
           />
         ))}
       </div>
@@ -431,7 +431,7 @@ function TrendAreaChart({
           <YAxis
             yAxisId="right"
             orientation="right"
-            tickFormatter={(v: number) => v + "д"}
+            tickFormatter={(v: number) => v + "d"}
             tick={{ fontSize: 10, fill: "#9CA3AF" }}
             axisLine={false}
             tickLine={false}
@@ -448,7 +448,7 @@ function TrendAreaChart({
                     <p key={i} className="flex justify-between gap-4">
                       <span style={{ color: p.stroke ?? p.fill }}>{p.name}</span>
                       <span className="font-medium text-gray-900 tabular-nums">
-                        {p.name === debtLabel ? fmtMln(p.value) : p.value + " дн"}
+                        {p.name === debtLabel ? fmtMln(p.value) : p.value + " days"}
                       </span>
                     </p>
                   ))}
@@ -486,15 +486,15 @@ function TrendAreaChart({
 
 // ── Month selector constants ───────────────────────────────────────────────────
 
-const FUTURE_MONTHS: Exclude<MonthKey, 'Весь период'>[] = ['Июнь 2026', 'Июль 2026', 'Август 2026'];
-const TREND_SUBTITLE = "Ноя 2025 → Июн 2026 · история 8 месяцев";
+const FUTURE_MONTHS: Exclude<MonthKey, 'All periods'>[] = ['June 2026', 'July 2026', 'August 2026'];
+const TREND_SUBTITLE = "Nov 2025 → Jun 2026 · 8-month history";
 
 // ── Main export ────────────────────────────────────────────────────────────────
 
 export function DynamicsTab() {
-  const [selectedMonth, setSelectedMonth] = useState<MonthKey>('Июнь 2026');
-  const [selectedClient, setSelectedClient] = useState("Яндекс");
-  const [selectedKam, setSelectedKam] = useState("Кирилл П.");
+  const [selectedMonth, setSelectedMonth] = useState<MonthKey>('June 2026');
+  const [selectedClient, setSelectedClient] = useState("Yandex");
+  const [selectedKam, setSelectedKam] = useState("Kirill P.");
   const [clientShowAll, setClientShowAll] = useState(false);
   const [kamShowAll, setKamShowAll] = useState(false);
 
@@ -507,9 +507,8 @@ export function DynamicsTab() {
   return (
     <div className="px-8 py-4 space-y-6 pb-16">
 
-      {/* ── Month selector ──────────────────────────────────── */}
       <div className="flex items-center gap-2">
-        <span className="text-[11px] text-gray-400 font-medium flex-shrink-0">Период:</span>
+        <span className="text-[11px] text-gray-400 font-medium flex-shrink-0">Period:</span>
         <div className="flex border border-gray-200 rounded-lg overflow-hidden text-[11px]">
           {FUTURE_MONTHS.map(m => (
             <button
@@ -525,53 +524,51 @@ export function DynamicsTab() {
           ))}
         </div>
         <button
-          onClick={() => setSelectedMonth('Весь период')}
+          onClick={() => setSelectedMonth('All periods')}
           className={cn(
             "px-3 py-1.5 text-[11px] border border-gray-200 rounded-lg transition-colors",
-            selectedMonth === 'Весь период' ? "bg-gray-900 text-white border-transparent" : "text-gray-500 hover:bg-gray-50"
+            selectedMonth === 'All periods' ? "bg-gray-900 text-white border-transparent" : "text-gray-500 hover:bg-gray-50"
           )}
         >
-          Весь период
+          All periods
         </button>
       </div>
 
-      {/* ── Block 1: KPI row ────────────────────────────────── */}
       <section>
         <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-3">
-          Сводка по дебиторке
+          AR Summary
         </p>
         <div className="grid grid-cols-4 gap-3">
           <KpiCard
             dotColor="#3B82F6"
-            label="Всего дебиторка"
+            label="Total AR"
             value={fmtMln(kpi.total)}
-            sub="на 13.06.2026"
+            sub="as of 13.06.2026"
           />
           <KpiCard
             dotColor="#EF4444"
-            label="Просрочено"
+            label="Overdue"
             value={fmtMln(kpi.overdue)}
-            sub={`${kpi.overdueCount} платежей из ${kpi.totalCount}`}
+            sub={`${kpi.overdueCount} payments out of ${kpi.totalCount}`}
           />
           <KpiCard
             dotColor="#818CF8"
-            label="Срок просрочки"
-            value={`${kpi.medianDays} дн`}
-            sub={`медиана / макс ${kpi.maxDays} дн`}
+            label="Overdue Period"
+            value={`${kpi.medianDays} days`}
+            sub={`median / max ${kpi.maxDays} days`}
           />
           <KpiCard
             dotColor="#22C55E"
-            label="Собрано за период"
+            label="Collected"
             value={`${kpi.collectedPct}%`}
-            sub={`${fmtMln(kpi.collected)} из ${fmtMln(kpi.total)}`}
+            sub={`${fmtMln(kpi.collected)} out of ${fmtMln(kpi.total)}`}
           />
         </div>
       </section>
 
-      {/* ── Block 2: Analytics 2×2 ──────────────────────────── */}
       <section>
         <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-3">
-          Аналитика
+          Analytics
         </p>
         <div className="grid grid-cols-2 gap-4">
           <div className={cn(clientShowAll && "col-span-2")}>
@@ -591,16 +588,14 @@ export function DynamicsTab() {
         </div>
       </section>
 
-      {/* ── Block 3: Trends ─────────────────────────────────── */}
       <section>
         <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-3">
-          Тренды
+          Trends
         </p>
         <div className="flex flex-col gap-4">
 
-          {/* 3.1 По компании */}
           <div className="bg-white border border-gray-200 rounded-lg p-4">
-            <p className="text-xs font-semibold text-gray-700">Тренд по компании</p>
+            <p className="text-xs font-semibold text-gray-700">Company Trend</p>
             <p className="text-[11px] text-gray-400 mt-0.5 mb-3">{TREND_SUBTITLE}</p>
             <TrendAreaChart
               data={companyTrend.map(d => ({ month: d.month, debt: d.overdue, days: d.medianDays }))}
@@ -609,16 +604,15 @@ export function DynamicsTab() {
               areaFill="#FCA5A5"
               dotColor="#EF4444"
               daysStroke="#818CF8"
-              debtLabel="Просроч. остаток"
-              daysLabel="Медиана дней"
+              debtLabel="Overdue balance"
+              daysLabel="Median days"
             />
           </div>
 
-          {/* 3.2 По клиенту */}
           <div className="bg-white border border-gray-200 rounded-lg p-4">
             <div className="flex items-center justify-between mb-3">
               <div>
-                <p className="text-xs font-semibold text-gray-700">Динамика по клиенту</p>
+                <p className="text-xs font-semibold text-gray-700">Client Dynamics</p>
                 <p className="text-[11px] text-gray-400 mt-0.5">{TREND_SUBTITLE}</p>
               </div>
               <DropdownMenu>
@@ -641,16 +635,15 @@ export function DynamicsTab() {
               areaFill="#BFDBFE"
               dotColor="#3B82F6"
               daysStroke="#818CF8"
-              debtLabel="Долг"
-              daysLabel="Дней просрочки"
+              debtLabel="Debt"
+              daysLabel="Days overdue"
             />
           </div>
 
-          {/* 3.3 По КАМу */}
           <div className="bg-white border border-gray-200 rounded-lg p-4">
             <div className="flex items-center justify-between mb-3">
               <div>
-                <p className="text-xs font-semibold text-gray-700">Динамика по КАМу</p>
+                <p className="text-xs font-semibold text-gray-700">KAM Dynamics</p>
                 <p className="text-[11px] text-gray-400 mt-0.5">{TREND_SUBTITLE}</p>
               </div>
               <DropdownMenu>
@@ -673,8 +666,8 @@ export function DynamicsTab() {
               areaFill="#C4B5FD"
               dotColor="#8B5CF6"
               daysStroke="#60A5FA"
-              debtLabel="Долг портфеля"
-              daysLabel="Дней просрочки"
+              debtLabel="Portfolio debt"
+              daysLabel="Days overdue"
             />
           </div>
 
