@@ -442,7 +442,7 @@ export function ClientsPage() {
 
                   {isExpanded && (
                     <div className="pl-8 pt-1 pb-2">
-                      <button className="text-xs text-gray-400 hover:text-gray-600 transition-colors py-1" onClick={(e) => { e.stopPropagation(); console.log("add doc", project.id); }}>
+                      <button className="text-xs text-gray-400 hover:text-gray-600 transition-colors py-1" onClick={(e) => { e.stopPropagation(); }}>
                         + Add document
                       </button>
                     </div>
